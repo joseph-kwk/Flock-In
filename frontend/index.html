@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Flock In | Check In</title>
+  <meta name="description" content="Quick & relaxed check-in for Flock In. Scan, tap, and you're in!">
+  <link rel="stylesheet" href="css/main.css?v=4">
+  <link rel="icon" href="assets/logo/flock-in.png" type="image/png">
+</head>
+<body>
+
+  <!-- Confetti Canvas Effect -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <main id="app">
+    <!-- Header & Branding -->
+    <header class="app-header">
+      <div class="logo-wrapper">
+        <img src="assets/logo/flock-in.png" alt="Flock In Mascot" class="logo">
+      </div>
+      <h1 class="brand-title">Flock In</h1>
+      <p class="brand-subtitle">Tap your name to check in!</p>
+      
+      <div class="meeting-badge" id="meeting-badge">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="meeting-info">Checking status...</span>
+      </div>
+    </header>
+
+    <!-- Dynamic Container -->
+    <div id="checkin-container">
+      <section class="checkin-card">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="search" 
+            id="student-search" 
+            placeholder="Search your name..." 
+            autocomplete="off"
+            aria-label="Search name"
+          >
+          <button type="button" class="clear-btn" id="clear-search" aria-label="Clear search">✕</button>
+        </div>
+
+        <div id="student-list" role="list">
+          <div class="empty-state">
+            <p>Loading list...</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Admin Link & SC D-ship Footer -->
+    <footer class="app-footer">
+      <p class="sc-dship-branding">SC D-ship Check In</p>
+      <p><a href="admin.html" class="admin-link">Admin Access</a></p>
+    </footer>
+  </main>
+
+  <!-- Canvas Confetti Helper -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script type="module" src="js/app.js?v=4"></script>
+</body>
+</html>

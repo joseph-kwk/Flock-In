@@ -1,0 +1,464 @@
+/* ==========================================================================
+   Flock In — Relaxed, Cool Purple Design System (v4)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Electric Purple Color Palette */
+  --bg-gradient: linear-gradient(135deg, #13072E 0%, #240A54 35%, #4C1D95 70%, #6D28D9 100%);
+  --purple-glow: rgba(139, 92, 246, 0.4);
+  --purple-accent: #8B5CF6;
+  --purple-vivid: #A78BFA;
+  --purple-light: #DDD6FE;
+  
+  --emerald-glow: #10B981;
+  --emerald-soft: #ECFDF5;
+  --amber-accent: #F59E0B;
+  
+  --card-glass: rgba(255, 255, 255, 0.95);
+  --card-border: rgba(255, 255, 255, 0.25);
+  
+  --text-dark: #0F172A;
+  --text-muted: #64748B;
+  --text-light: #F8FAFC;
+  
+  --radius-xl: 32px;
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+  
+  --shadow-neon: 0 0 30px rgba(139, 92, 246, 0.4);
+  --shadow-card: 0 20px 40px -10px rgba(0, 0, 0, 0.35), 0 10px 15px -5px rgba(0, 0, 0, 0.2);
+  
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-dark);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 16px;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Wider Container on Desktop so Name Cards Hover Comfortably */
+#app {
+  width: 100%;
+  max-width: min(540px, 94vw);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 40px;
+}
+
+/* Header & Branding */
+.app-header {
+  text-align: center;
+  color: var(--text-light);
+  padding: 16px 12px 4px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-wrapper {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 10px 20px rgba(139, 92, 246, 0.5));
+  animation: floatMascot 4s ease-in-out infinite;
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.brand-title {
+  font-family: var(--font-heading);
+  font-size: 2.6rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  background: linear-gradient(180deg, #FFFFFF 0%, #E9D5FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 4px 20px rgba(139, 92, 246, 0.5);
+}
+
+.brand-subtitle {
+  font-size: 1rem;
+  color: #DDD6FE;
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.meeting-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 8px 18px;
+  border-radius: 100px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #F3E8FF;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  background-color: var(--emerald-glow);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--emerald-glow);
+}
+.status-dot.closed {
+  background-color: #EF4444;
+  box-shadow: 0 0 12px #EF4444;
+}
+
+/* Check-In Card */
+.checkin-card {
+  background: var(--card-glass);
+  backdrop-filter: blur(24px);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--card-border);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Pill Search Bar */
+.search-box {
+  position: relative;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--purple-accent);
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+#student-search {
+  width: 100%;
+  padding: 16px 44px 16px 50px;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 600;
+  border: 2px solid #E9D5FF;
+  border-radius: 100px;
+  background: #FAF5FF;
+  color: var(--text-dark);
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+#student-search:focus {
+  border-color: var(--purple-accent);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
+}
+
+.clear-btn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #DDD6FE;
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: var(--purple-accent);
+  font-weight: 800;
+}
+
+/* Student Cards List - Generous Width for Hover Stability */
+#student-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+#student-list::-webkit-scrollbar {
+  width: 6px;
+}
+#student-list::-webkit-scrollbar-thumb {
+  background: #C4B5FD;
+  border-radius: 10px;
+}
+
+.student-card {
+  width: 100%;
+  text-align: left;
+  padding: 18px 24px;
+  background: #FFFFFF;
+  border: 2px solid #F3E8FF;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 8px rgba(139, 92, 246, 0.06);
+}
+
+.student-card:hover:not(:disabled) {
+  border-color: var(--purple-accent);
+  background: #F5F3FF;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(139, 92, 246, 0.18);
+}
+
+.student-card:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Disabled / Already Checked In Card State */
+.student-card:disabled, .student-card.checked-in {
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+  color: #94A3B8;
+  cursor: not-allowed;
+  opacity: 0.75;
+  box-shadow: none;
+  transform: none;
+}
+
+.student-card:disabled .tap-badge, .student-card.checked-in .tap-badge {
+  background: var(--emerald-soft);
+  color: #059669;
+  border: 1px solid #A7F3D0;
+}
+
+.tap-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: var(--font-body);
+  color: var(--purple-accent);
+  background: rgba(139, 92, 246, 0.12);
+  padding: 6px 14px;
+  border-radius: 100px;
+  transition: background 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+}
+
+.student-card:hover:not(:disabled) .tap-badge {
+  background: var(--purple-accent);
+  color: #FFFFFF;
+}
+
+/* Instant Confirmation Dialog Card */
+.confirm-card {
+  background: var(--card-glass);
+  border-radius: var(--radius-xl);
+  padding: 32px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-card);
+  animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.confirm-title {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.confirm-name {
+  color: var(--purple-accent);
+  font-size: 1.7rem;
+  font-weight: 900;
+  margin-top: -4px;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.btn-confirm-yes {
+  flex: 2;
+  padding: 14px;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #7C3AED 0%, #9333EA 100%);
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
+  transition: transform 0.2s ease;
+}
+.btn-confirm-yes:hover { transform: translateY(-2px); }
+
+.btn-confirm-cancel {
+  flex: 1;
+  padding: 14px;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 100px;
+  cursor: pointer;
+}
+.btn-confirm-cancel:hover { background: #E2E8F0; }
+
+/* Clean Checked-In Locked Screen */
+.checkedin-locked-card {
+  background: var(--card-glass);
+  border-radius: var(--radius-xl);
+  padding: 36px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-card);
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.locked-title {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--text-dark);
+}
+
+.locked-name {
+  color: var(--purple-accent);
+  font-weight: 900;
+}
+
+.locked-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--emerald-soft);
+  color: #065F46;
+  border: 1.5px solid #A7F3D0;
+  padding: 8px 20px;
+  border-radius: 100px;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.locked-note {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #5B21B6;
+  background: #F3E8FF;
+  padding: 14px 24px;
+  border-radius: 100px;
+  margin-top: 4px;
+}
+
+.change-name-btn {
+  background: transparent;
+  border: none;
+  color: #94A3B8;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 6px;
+  text-decoration: underline;
+}
+.change-name-btn:hover { color: var(--purple-accent); }
+
+/* Footer & SC D-ship Branding */
+.app-footer {
+  text-align: center;
+  font-size: 0.88rem;
+  color: #C4B5FD;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sc-dship-branding {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #E9D5FF;
+  letter-spacing: 0.03em;
+}
+
+.admin-link {
+  color: #DDD6FE;
+  text-decoration: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+.admin-link:hover { text-decoration: underline; color: #FFFFFF; }
+
+/* Canvas Confetti */
+#confetti-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 2000;
+}
+
+/* Keyframe Animations */
+@keyframes floatMascot {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}

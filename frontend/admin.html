@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Flock In | Admin</title>
+  <meta name="description" content="Simple admin attendance monitoring for Flock In.">
+  <link rel="stylesheet" href="css/admin.css?v=6">
+  <link rel="icon" href="assets/logo/flock-in.png" type="image/png">
+</head>
+<body>
+
+  <!-- Admin Password Protection Overlay -->
+  <div class="pwd-modal-overlay" id="pwd-overlay">
+    <div class="pwd-modal-card">
+      <img src="assets/logo/flock-in.png" alt="Admin Mascot" class="pwd-mascot-img">
+      <h2 class="pwd-title">Admin Access</h2>
+      <p class="pwd-subtitle">Enter password to unlock dashboard:</p>
+      <input type="password" id="admin-pwd-input" class="pwd-input" placeholder="Enter password..." autocomplete="off">
+      <button type="button" class="pwd-unlock-btn" id="pwd-submit-btn">Unlock Admin ✨</button>
+      <p id="pwd-error" class="pwd-error-msg" style="display: none;">Incorrect password. Try again!</p>
+    </div>
+  </div>
+
+  <!-- Add Person Modal Overlay (First Name & Last Name) -->
+  <div class="pwd-modal-overlay" id="add-person-modal" style="display: none;">
+    <div class="add-person-card">
+      <h2 style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">Add New Person ➕</h2>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: -6px;">New students will immediately appear on the check-in list.</p>
+      
+      <div class="input-group-stacked">
+        <label for="first-name-input">First Name</label>
+        <input type="text" id="first-name-input" class="modal-text-input" placeholder="e.g. Sarah" autocomplete="off">
+      </div>
+
+      <div class="input-group-stacked">
+        <label for="last-name-input">Last Name</label>
+        <input type="text" id="last-name-input" class="modal-text-input" placeholder="e.g. Miller" autocomplete="off">
+      </div>
+
+      <div class="modal-action-row">
+        <button type="button" class="btn-confirm-cancel" id="cancel-add-person-btn">Cancel</button>
+        <button type="button" class="pwd-unlock-btn" id="save-add-person-btn" style="margin-top: 0; flex: 2;">Add to Roster ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <main id="app" class="admin-app">
+    <!-- Header with Mascot Logo, Add Person & Logout -->
+    <header class="admin-header">
+      <div class="admin-brand-group">
+        <img src="assets/logo/flock-in.png" alt="Flock In Logo" class="admin-logo">
+        <div class="admin-title-group">
+          <h1>Flock In Admin</h1>
+          <p id="admin-session-title">Attendance Overview</p>
+        </div>
+      </div>
+
+      <div class="admin-actions">
+        <button type="button" class="btn-secondary btn-add-person" id="add-person-btn">➕ Add Person</button>
+        <button type="button" class="btn-secondary" id="refresh-btn">🔄 Refresh</button>
+        <button type="button" class="btn-secondary" id="toggle-meeting-btn">🔒 Pause Check-In</button>
+        <button type="button" class="btn-secondary" id="logout-btn">🔓 Logout</button>
+        <a href="index.html" class="btn-secondary">📱 Check-In Page</a>
+      </div>
+    </header>
+
+    <!-- Clean 2-Card Stats Summary -->
+    <section class="stats-grid">
+      <div class="stat-card present">
+        <span class="stat-label">Checked In</span>
+        <span class="stat-value" id="stat-present">0</span>
+      </div>
+
+      <div class="stat-card missing">
+        <span class="stat-label">Not Checked In</span>
+        <span class="stat-value" id="stat-missing">0</span>
+      </div>
+    </section>
+
+    <!-- Simple Filter Bar with Date Picker & Search -->
+    <section class="checkin-card">
+      <div class="filter-bar">
+        <div class="tab-group">
+          <button type="button" class="tab-btn active" data-tab="all">All Roster</button>
+          <button type="button" class="tab-btn" data-tab="present">Checked In</button>
+          <button type="button" class="tab-btn" data-tab="missing">Not Checked In</button>
+        </div>
+
+        <div class="filter-controls">
+          <input type="date" id="admin-date-filter" class="admin-date-picker" aria-label="Filter by date">
+          <div class="admin-search-box">
+            <span class="admin-search-icon">🔍</span>
+            <input type="search" id="admin-search" placeholder="Search name..." autocomplete="off">
+          </div>
+        </div>
+      </div>
+
+      <div id="admin-roster-list" class="admin-list-container">
+        <p style="text-align: center; color: var(--text-muted); padding: 20px;">Loading...</p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p class="sc-dship-branding">SC D-ship Check In</p>
+      <p>Flock In Admin Control</p>
+    </footer>
+  </main>
+
+  <script type="module" src="js/admin.js?v=20260831_0939"></script>
+</body>
+</html>
