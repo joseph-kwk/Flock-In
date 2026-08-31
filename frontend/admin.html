@@ -6,10 +6,13 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title>Flock In | Admin</title>
   <meta name="description" content="Simple admin attendance monitoring for Flock In.">
-  <link rel="stylesheet" href="css/admin.css?v=6">
+  <link rel="stylesheet" href="css/admin.css?v=8">
   <link rel="icon" href="assets/logo/flock-in.png" type="image/png">
 </head>
 <body>
+
+  <!-- Toast Notification -->
+  <div id="toast-notification" class="toast-notification" role="alert" aria-live="polite"></div>
 
   <!-- Admin Password Protection Overlay -->
   <div class="pwd-modal-overlay" id="pwd-overlay">
@@ -20,6 +23,7 @@
       <input type="password" id="admin-pwd-input" class="pwd-input" placeholder="Enter password..." autocomplete="off">
       <button type="button" class="pwd-unlock-btn" id="pwd-submit-btn">Unlock Admin ✨</button>
       <p id="pwd-error" class="pwd-error-msg" style="display: none;">Incorrect password. Try again!</p>
+      <a href="index.html" class="pwd-back-link">← Back to Flock In Check-In</a>
     </div>
   </div>
 
@@ -27,8 +31,8 @@
   <div class="pwd-modal-overlay" id="add-person-modal" style="display: none;">
     <div class="add-person-card">
       <h2 style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">Add New Person ➕</h2>
-      <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: -6px;">New students will immediately appear on the check-in list.</p>
-      
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: -6px;">They'll immediately appear on the check-in list.</p>
+
       <div class="input-group-stacked">
         <label for="first-name-input">First Name</label>
         <input type="text" id="first-name-input" class="modal-text-input" placeholder="e.g. Sarah" autocomplete="off">
@@ -42,6 +46,17 @@
       <div class="modal-action-row">
         <button type="button" class="btn-confirm-cancel" id="cancel-add-person-btn">Cancel</button>
         <button type="button" class="pwd-unlock-btn" id="save-add-person-btn" style="margin-top: 0; flex: 2;">Add to Roster ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Dialog Modal -->
+  <div class="pwd-modal-overlay" id="confirm-modal" style="display: none;">
+    <div class="confirm-dialog-card">
+      <p class="confirm-dialog-msg" id="confirm-dialog-msg">Are you sure?</p>
+      <div class="modal-action-row">
+        <button type="button" class="btn-confirm-cancel" id="confirm-cancel-btn">Cancel</button>
+        <button type="button" class="btn-confirm-yes" id="confirm-ok-btn">Confirm</button>
       </div>
     </div>
   </div>
@@ -109,6 +124,6 @@
     </footer>
   </main>
 
-  <script type="module" src="js/admin.js?v=20260831_0939"></script>
+  <script type="module" src="js/admin.js?v=20260831_1006"></script>
 </body>
 </html>

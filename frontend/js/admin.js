@@ -1,5 +1,6 @@
 /**
- * Flock In - Administrator Dashboard Module (With First & Last Name Add Person Modal)
+ * Flock In - Administrator Dashboard Module
+ * Toast notifications, in-page confirm dialogs, back link on login modal
  */
 
 import { getAttendanceSummary, toggleMeetingStatus, checkIn, undoCheckIn, addStudent, deleteStudent } from "./api.js";
@@ -8,8 +9,55 @@ const ADMIN_PASSWORD = "D-ship@26";
 let summaryData = null;
 let currentTab = "all";
 let filterQuery = "";
-let selectedDate = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+let selectedDate = new Date().toISOString().split("T")[0];
 
+// =========================================================
+// Toast Notification System
+// =========================================================
+function showToast(message, type = "info", duration = 3200) {
+  const toast = document.getElementById("toast-notification");
+  if (!toast) return;
+  toast.textContent = message;
+  toast.className = `toast-notification ${type}`;
+  // Force reflow so animation re-triggers
+  void toast.offsetWidth;
+  toast.classList.add("show");
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, duration);
+}
+
+// =========================================================
+// In-Page Confirm Dialog (replaces window.confirm)
+// =========================================================
+function showConfirm(message) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById("confirm-modal");
+    const msgEl = document.getElementById("confirm-dialog-msg");
+    const okBtn = document.getElementById("confirm-ok-btn");
+    const cancelBtn = document.getElementById("confirm-cancel-btn");
+    if (!modal || !msgEl || !okBtn || !cancelBtn) {
+      resolve(window.confirm(message));
+      return;
+    }
+    msgEl.textContent = message;
+    modal.style.display = "flex";
+
+    const cleanup = () => {
+      modal.style.display = "none";
+      okBtn.removeEventListener("click", onOk);
+      cancelBtn.removeEventListener("click", onCancel);
+    };
+    const onOk = () => { cleanup(); resolve(true); };
+    const onCancel = () => { cleanup(); resolve(false); };
+    okBtn.addEventListener("click", onOk);
+    cancelBtn.addEventListener("click", onCancel);
+  });
+}
+
+// =========================================================
+// Password Protection
+// =========================================================
 document.addEventListener("DOMContentLoaded", () => {
   setupPasswordProtection();
 });
@@ -51,6 +99,9 @@ function setupPasswordProtection() {
   }
 }
 
+// =========================================================
+// Admin Dashboard Init
+// =========================================================
 async function initAdminDashboard() {
   const refreshBtn = document.getElementById("refresh-btn");
   const toggleBtn = document.getElementById("toggle-meeting-btn");
@@ -60,7 +111,7 @@ async function initAdminDashboard() {
   const dateFilterInput = document.getElementById("admin-date-filter");
   const tabBtns = document.querySelectorAll(".tab-btn");
 
-  // Add Person Modal Handlers (First Name & Last Name)
+  // Add Person Modal
   const addModal = document.getElementById("add-person-modal");
   const firstNameInput = document.getElementById("first-name-input");
   const lastNameInput = document.getElementById("last-name-input");
@@ -88,19 +139,30 @@ async function initAdminDashboard() {
       const last = lastNameInput ? lastNameInput.value.trim() : "";
 
       if (!first || !last) {
-        alert("Please enter both First Name and Last Name.");
+        showToast("Please enter both First Name and Last Name.", "error");
         return;
       }
 
       const fullName = `${first} ${last}`;
-      const result = await addStudent(fullName);
 
-      if (result && result.success) {
-        if (addModal) addModal.style.display = "none";
-        alert(`Added ${fullName} to roster!`);
-        await loadDashboardData();
-      } else {
-        alert(result.error || "Failed to add person.");
+      // Disable button while saving
+      savePersonBtn.disabled = true;
+      savePersonBtn.textContent = "Adding...";
+
+      try {
+        const result = await addStudent(fullName);
+        if (result && result.success) {
+          if (addModal) addModal.style.display = "none";
+          showToast(`✓ ${fullName} added to roster!`, "success");
+          await loadDashboardData();
+        } else {
+          showToast(result.error || "Failed to add person.", "error");
+        }
+      } catch (e) {
+        showToast("Something went wrong. Please try again.", "error");
+      } finally {
+        savePersonBtn.disabled = false;
+        savePersonBtn.textContent = "Add to Roster ✓";
       }
     };
   }
@@ -111,7 +173,6 @@ async function initAdminDashboard() {
       const pwdOverlay = document.getElementById("pwd-overlay");
       const pwdInput = document.getElementById("admin-pwd-input");
       const errorMsg = document.getElementById("pwd-error");
-
       if (pwdInput) pwdInput.value = "";
       if (errorMsg) errorMsg.style.display = "none";
       if (pwdOverlay) pwdOverlay.style.display = "flex";
@@ -133,11 +194,12 @@ async function initAdminDashboard() {
       if (!summaryData) return;
       const isCurrentlyOpen = summaryData.meeting.status === "OPEN";
       const nextStatus = isCurrentlyOpen ? "CLOSED" : "OPEN";
-
-      const confirmMsg = isCurrentlyOpen ? "Pause check-ins?" : "Re-open check-ins?";
-      if (confirm(confirmMsg)) {
+      const confirmMsg = isCurrentlyOpen ? "Pause check-ins for this session?" : "Re-open check-ins?";
+      const confirmed = await showConfirm(confirmMsg);
+      if (confirmed) {
         await toggleMeetingStatus(nextStatus);
         await loadDashboardData();
+        showToast(isCurrentlyOpen ? "Check-in paused." : "Check-in is open!", isCurrentlyOpen ? "info" : "success");
       }
     };
   }
@@ -161,6 +223,9 @@ async function initAdminDashboard() {
   await loadDashboardData();
 }
 
+// =========================================================
+// Data Loading
+// =========================================================
 async function loadDashboardData() {
   try {
     const data = await getAttendanceSummary(selectedDate);
@@ -169,6 +234,7 @@ async function loadDashboardData() {
     renderRosterList();
   } catch (err) {
     console.error("Admin data load error:", err);
+    showToast("Failed to load data. Check your connection.", "error");
   }
 }
 
@@ -178,7 +244,7 @@ function renderHeaderAndStats(data) {
 
   const meeting = data.meeting;
   if (sessionTitle) {
-    sessionTitle.textContent = `Gathering Date: ${selectedDate || meeting.date} • Status: ${meeting.status}`;
+    sessionTitle.textContent = `Gathering: ${selectedDate || meeting.date} • ${meeting.status}`;
   }
 
   if (toggleBtn) {
@@ -193,11 +259,13 @@ function renderHeaderAndStats(data) {
 
   const statPresent = document.getElementById("stat-present");
   const statMissing = document.getElementById("stat-missing");
-
   if (statPresent) statPresent.textContent = data.stats.present;
   if (statMissing) statMissing.textContent = data.stats.missing;
 }
 
+// =========================================================
+// Roster Rendering
+// =========================================================
 function renderRosterList() {
   const container = document.getElementById("admin-roster-list");
   if (!container || !summaryData) return;
@@ -208,7 +276,6 @@ function renderRosterList() {
   summaryData.present.forEach(p => {
     rows.push({ id: p.id, name: p.name, status: "Checked In", time: p.time });
   });
-
   summaryData.missing.forEach(m => {
     rows.push({ id: m.id, name: m.name, status: "Not Checked In", time: "" });
   });
@@ -223,9 +290,7 @@ function renderRosterList() {
   }
 
   if (rows.length === 0) {
-    container.innerHTML = `
-      <p style="text-align: center; color: var(--text-muted); padding: 24px;">No matching records found.</p>
-    `;
+    container.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 24px;">No matching records found.</p>`;
     return;
   }
 
@@ -238,7 +303,7 @@ function renderRosterList() {
     if (isPresent) {
       card.innerHTML = `
         <div class="admin-row-name">${escapeHtml(r.name)}</div>
-        <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
           <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">${formattedTime}</span>
           <span class="badge present">Checked In</span>
           <button type="button" class="btn-admin-undo" data-id="${r.id}" title="Undo check-in">Undo</button>
@@ -246,66 +311,59 @@ function renderRosterList() {
         </div>
       `;
 
-      const undoBtn = card.querySelector(".btn-admin-undo");
-      if (undoBtn) {
-        undoBtn.addEventListener("click", async () => {
-          if (confirm(`Remove check-in for ${r.name}?`)) {
-            await undoCheckIn(r.id, summaryData.meeting.id);
-            await loadDashboardData();
-          }
-        });
-      }
+      card.querySelector(".btn-admin-undo").addEventListener("click", async () => {
+        const ok = await showConfirm(`Remove check-in for ${r.name}?`);
+        if (ok) {
+          await undoCheckIn(r.id, summaryData.meeting.id);
+          showToast(`Check-in removed for ${r.name}.`, "info");
+          await loadDashboardData();
+        }
+      });
     } else {
       card.innerHTML = `
         <div class="admin-row-name">${escapeHtml(r.name)}</div>
-        <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
           <button type="button" class="btn-admin-checkin" data-id="${r.id}">+ Check In</button>
           <span class="badge missing">Not Checked In</span>
           <button type="button" class="btn-admin-delete" data-id="${r.id}" title="Remove from roster">🗑️</button>
         </div>
       `;
 
-      const checkInBtn = card.querySelector(".btn-admin-checkin");
-      if (checkInBtn) {
-        checkInBtn.addEventListener("click", async () => {
-          if (confirm(`Check in ${r.name} manually?`)) {
-            await checkIn(r.id, summaryData.meeting.id);
-            await loadDashboardData();
-          }
-        });
-      }
-    }
-
-    const deleteBtn = card.querySelector(".btn-admin-delete");
-    if (deleteBtn) {
-      deleteBtn.addEventListener("click", async () => {
-        if (confirm(`Remove ${r.name} permanently from roster?`)) {
-          await deleteStudent(r.id);
+      card.querySelector(".btn-admin-checkin").addEventListener("click", async () => {
+        const ok = await showConfirm(`Check in ${r.name} manually?`);
+        if (ok) {
+          await checkIn(r.id, summaryData.meeting.id);
+          showToast(`${r.name} checked in!`, "success");
           await loadDashboardData();
         }
       });
     }
 
+    card.querySelector(".btn-admin-delete").addEventListener("click", async () => {
+      const ok = await showConfirm(`Remove ${r.name} from roster permanently?`);
+      if (ok) {
+        await deleteStudent(r.id);
+        showToast(`${r.name} removed from roster.`, "info");
+        await loadDashboardData();
+      }
+    });
+
     container.appendChild(card);
   });
 }
 
+// =========================================================
+// Helpers
+// =========================================================
 function cleanTime(timeStr) {
   if (!timeStr) return "";
   const str = String(timeStr).trim();
-
-  // If it's a full Date string like "Sat Dec 30 1899 09:31:20 GMT...", parse it properly
   const d = new Date(str);
   if (!isNaN(d.getTime()) && (str.includes("GMT") || str.includes("T") || str.includes("1899"))) {
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   }
-
-  const timeRegex = /\b(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[APap][Mm])?)\b/;
-  const match = str.match(timeRegex);
-  if (match) {
-    return match[1];
-  }
-  return str;
+  const match = str.match(/\b(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[APap][Mm])?)\b/);
+  return match ? match[1] : str;
 }
 
 function escapeHtml(str) {
