@@ -4,7 +4,7 @@
 
 import { getAttendanceSummary, toggleMeetingStatus, checkIn, undoCheckIn, addStudent, deleteStudent } from "./api.js";
 
-const ADMIN_PASSWORD = "admin";
+const ADMIN_PASSWORD = "D-ship@26";
 let summaryData = null;
 let currentTab = "all";
 let filterQuery = "";
@@ -111,7 +111,7 @@ async function initAdminDashboard() {
       const pwdOverlay = document.getElementById("pwd-overlay");
       const pwdInput = document.getElementById("admin-pwd-input");
       const errorMsg = document.getElementById("pwd-error");
-      
+
       if (pwdInput) pwdInput.value = "";
       if (errorMsg) errorMsg.style.display = "none";
       if (pwdOverlay) pwdOverlay.style.display = "flex";
@@ -309,7 +309,7 @@ function cleanTime(timeStr) {
 }
 
 function escapeHtml(str) {
-  return str.replace(/[&<>'"]/g, 
+  return str.replace(/[&<>'"]/g,
     tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
   );
 }
