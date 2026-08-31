@@ -107,25 +107,36 @@ function renderStudents(list) {
     return;
   }
 
+  const isMeetingClosed = !currentMeeting || currentMeeting.status !== "OPEN";
+
   list.forEach(student => {
     const isAlreadyCheckedIn = checkedInStudentIds.has(student.id);
     const card = document.createElement("button");
     card.type = "button";
-    card.className = `student-card ${isAlreadyCheckedIn ? 'checked-in' : ''}`;
     card.setAttribute("role", "listitem");
-    
+
     if (isAlreadyCheckedIn) {
+      card.className = "student-card checked-in";
       card.disabled = true;
       card.innerHTML = `
         <span>${escapeHtml(student.name)}</span>
         <span class="tap-badge">Checked In ✓</span>
       `;
+    } else if (isMeetingClosed) {
+      // Paused by admin — visually dimmed, completely non-interactive
+      card.className = "student-card paused";
+      card.disabled = true;
+      card.setAttribute("aria-disabled", "true");
+      card.innerHTML = `
+        <span>${escapeHtml(student.name)}</span>
+        <span class="tap-badge">Check-In Paused</span>
+      `;
     } else {
+      card.className = "student-card";
       card.innerHTML = `
         <span>${escapeHtml(student.name)}</span>
         <span class="tap-badge">Tap to Check In</span>
       `;
-
       card.addEventListener("click", () => {
         promptConfirmation(student);
       });
@@ -186,7 +197,7 @@ function restoreSearchList() {
 
 async function executeCheckIn(student) {
   if (!currentMeeting || currentMeeting.status !== "OPEN") {
-    alert("Check-in is currently paused.");
+    // Quietly return to the list — cards are already disabled when paused
     restoreSearchList();
     return;
   }
@@ -197,20 +208,36 @@ async function executeCheckIn(student) {
     const result = await checkIn(student.id, currentMeeting.id);
 
     if (!result.success && result.error) {
-      alert(result.error);
-      restoreSearchList();
+      // Show inline error in the container instead of alert()
+      const container = document.getElementById("checkin-container");
+      if (container) {
+        container.innerHTML = `
+          <div class="confirm-card" style="text-align:center;">
+            <p style="font-size:1.1rem;font-weight:700;color:#DC2626;">⚠️ ${escapeHtml(result.error)}</p>
+            <button type="button" class="btn-confirm-cancel" id="err-back-btn" style="margin-top:12px;">← Go Back</button>
+          </div>
+        `;
+        document.getElementById("err-back-btn").addEventListener("click", restoreSearchList);
+      }
       return;
     }
 
     const checkInTime = result.timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    
     saveCheckIn(student.name, checkInTime);
     renderLockedScreen(student.name, checkInTime);
 
   } catch (err) {
     console.error("Check-in failed:", err);
-    alert("Failed to submit check-in. Please try again!");
-    restoreSearchList();
+    const container = document.getElementById("checkin-container");
+    if (container) {
+      container.innerHTML = `
+        <div class="confirm-card" style="text-align:center;">
+          <p style="font-size:1.1rem;font-weight:700;color:#DC2626;">⚠️ Failed to submit. Check your connection and try again.</p>
+          <button type="button" class="btn-confirm-cancel" id="err-back-btn" style="margin-top:12px;">← Go Back</button>
+        </div>
+      `;
+      document.getElementById("err-back-btn").addEventListener("click", restoreSearchList);
+    }
   }
 }
 
