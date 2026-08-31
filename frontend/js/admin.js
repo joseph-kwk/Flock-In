@@ -22,7 +22,7 @@ function setupPasswordProtection() {
 
   const attemptUnlock = () => {
     const val = pwdInput.value.trim();
-    if (val === ADMIN_PASSWORD || val === "admin123" || val === "flockin") {
+    if (val === ADMIN_PASSWORD) {
       sessionStorage.setItem("flock_admin_authenticated", "true");
       if (pwdOverlay) pwdOverlay.style.display = "none";
       if (errorMsg) errorMsg.style.display = "none";
