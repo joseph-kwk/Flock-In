@@ -1,3 +1,5 @@
+@import url('main.css');
+
 /* ==========================================================================
    Flock In — Clean Admin Dashboard (With Toast, Back Link & Confirm Dialog)
    ========================================================================== */
@@ -66,8 +68,6 @@
   color: var(--text-dark);
   line-height: 1.4;
 }
-
-@import url('main.css');
 
 #app.admin-app {
   max-width: 780px;
