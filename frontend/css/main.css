@@ -513,14 +513,25 @@ body {
 .footer-ig-link {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 0.82rem;
+  gap: 6px;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #DDD6FE;
   text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
-.footer-ig-link:hover { color: #FFFFFF; text-decoration: underline; }
-.footer-ig-link svg { flex-shrink: 0; }
+.footer-ig-link:hover { color: #FFFFFF; text-decoration: underline; transform: translateY(-1px); }
+.footer-ig-link .ig-icon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+  transition: transform 0.2s ease;
+}
+.footer-ig-link:hover .ig-icon {
+  transform: scale(1.1);
+}
 
 .footer-sheet-link {
   display: inline-flex;
