@@ -5,14 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title>Flock In | Check In</title>
-  <meta name="description" content="Quick & relaxed check-in for Flock In. Scan, tap, and you're in!">
-  <link rel="stylesheet" href="css/main.css?v=4">
+  <meta name="description" content="Quick &amp; relaxed check-in for Flock In. Scan, tap, and you're in!">
+  <link rel="stylesheet" href="css/main.css?v=5">
   <link rel="icon" href="assets/logo/flock-in.png" type="image/png">
 </head>
 <body>
 
   <!-- Confetti Canvas Effect -->
   <canvas id="confetti-canvas"></canvas>
+
+  <!-- About Modal Overlay -->
+  <div class="about-modal-overlay" id="about-modal" role="dialog" aria-modal="true" aria-labelledby="about-modal-title" style="display:none;">
+    <div class="about-modal-card">
+      <button type="button" class="about-close-btn" id="about-close-btn" aria-label="Close">&times;</button>
+      <img src="assets/logo/flock-in.png" alt="Flock In Mascot" class="about-mascot">
+      <h2 id="about-modal-title" class="about-title">About Flock In &#x1F411;</h2>
+      <p class="about-body">
+        <strong>Flock In</strong> is SC Discipleship's fun, fuss-free way to take roll at our gatherings.
+      </p>
+      <p class="about-body">
+        Instead of calling names or passing around a clipboard, everyone just taps their name on the screen &mdash; and we instantly know who made it out!
+      </p>
+      <p class="about-body">
+        Built with &#10084;&#65039; for <strong>Southwestern College Discipleship</strong> &mdash; a community growing together in faith and friendship.
+      </p>
+      <a href="https://instagram.com/discipleshipsc" target="_blank" rel="noopener noreferrer" class="about-ig-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="18" height="18"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        @discipleshipsc
+      </a>
+    </div>
+  </div>
 
   <main id="app">
     <!-- Header & Branding -->
@@ -33,7 +55,7 @@
     <div id="checkin-container">
       <section class="checkin-card">
         <div class="search-box">
-          <span class="search-icon">🔍</span>
+          <span class="search-icon">&#128269;</span>
           <input 
             type="search" 
             id="student-search" 
@@ -41,7 +63,7 @@
             autocomplete="off"
             aria-label="Search name"
           >
-          <button type="button" class="clear-btn" id="clear-search" aria-label="Clear search">✕</button>
+          <button type="button" class="clear-btn" id="clear-search" aria-label="Clear search">&#x2715;</button>
         </div>
 
         <div id="student-list" role="list">
@@ -52,15 +74,32 @@
       </section>
     </div>
 
-    <!-- Admin Link & SC D-ship Footer -->
+    <!-- Footer -->
     <footer class="app-footer">
       <p class="sc-dship-branding">SC D-ship Check In</p>
-      <p><a href="admin.html" target="_blank" rel="noopener noreferrer" class="admin-link">Admin Access</a></p>
+      <div class="footer-links">
+        <button type="button" class="footer-text-btn" id="about-btn">About this site</button>
+        <span class="footer-divider">&middot;</span>
+        <a href="https://instagram.com/discipleshipsc" target="_blank" rel="noopener noreferrer" class="footer-ig-link" aria-label="Follow us on Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="15" height="15"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          Follow us
+        </a>
+        <span class="footer-divider">&middot;</span>
+        <a href="admin.html" target="_blank" rel="noopener noreferrer" class="admin-link">Admin Access</a>
+      </div>
     </footer>
   </main>
 
   <!-- Canvas Confetti Helper -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script type="module" src="js/app.js?v=4"></script>
+  <script type="module" src="js/app.js?v=5"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var modal = document.getElementById('about-modal');
+      document.getElementById('about-btn').addEventListener('click', function() { modal.style.display = 'flex'; });
+      document.getElementById('about-close-btn').addEventListener('click', function() { modal.style.display = 'none'; });
+      modal.addEventListener('click', function(e) { if (e.target === modal) modal.style.display = 'none'; });
+    });
+  </script>
 </body>
 </html>
